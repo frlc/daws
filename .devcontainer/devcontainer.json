@@ -1,0 +1,9 @@
+{
+    "name": "Daws developer container",
+    "image": "mcr.microsoft.com/devcontainers/base",
+    "features": {
+        "ghr.io/dlouwers/devcontainers-features/devbox:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "postCreateCommand": "devbox install"
+}
