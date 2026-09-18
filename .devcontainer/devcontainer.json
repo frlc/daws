@@ -2,7 +2,9 @@
     "name": "Daws developer container",
     "image": "mcr.microsoft.com/devcontainers/base",
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": false
+        }
     },
     "postCreateCommand": "curl -fsSL https://get.jetify.com/devbox | bash -s -- -f && devbox install"
 }
