@@ -6,5 +6,5 @@
             "moby": false
         }
     },
-    "postCreateCommand": "sh <(curl -L https://nixos.org/nix/install) --no-daemon && . \"$HOME/.nix-profile/etc/profile.d/nix.sh\" && curl -fsSL https://get.jetify.com/devbox | bash -s -- -f && devbox install"
+    "postCreateCommand": "curl -L https://nixos.org/nix/install | sh -s -- --no-daemon && . \"$HOME/.nix-profile/etc/profile.d/nix.sh\" && curl -fsSL https://get.jetify.com/devbox | bash -s -- -f && devbox install"
 }
