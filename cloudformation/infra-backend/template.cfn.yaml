@@ -1,9 +1,4 @@
-# aws cloudformation create-stack --stack-name infra-backend --template-body file://infra-backend.cfn.yml
-
-Resources" : {
-  "InfraBackendBucket" : {
-      "Type" : "AWS::S3::Bucket"
-      }
-
-
-}
+# aws cloudformation create-stack --stack-name infra-backend --template-body file://template.cfn.yaml
+Resources: 
+  InfraBackendBucket:
+        Type: AWS::S3::Bucket
