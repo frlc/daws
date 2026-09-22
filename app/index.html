@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0C0E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Camp">
+<title>Camp — Força e Condicionamento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0C0E;
+  --surface:#15171A;
+  --surface-2:#1C1F23;
+  --line:#26292F;
+  --rope:#E23A2E;
+  --rope-dim:#7A1F19;
+  --win:#2FBF71;
+  --text:#F2F3F5;
+  --muted:#868D96;
+  --display:'Oswald','Roboto Condensed','Archivo Narrow','Arial Narrow',system-ui,sans-serif;
+  --body:'Inter','Roboto',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--body);
+  font-size:15px;
+  line-height:1.45;
+  padding:0 0 92px;
+  overscroll-behavior-y:contain;
+}
+.wrap{max-width:620px;margin:0 auto;padding:0 14px;}
+
+/* ---------- Header ---------- */
+header{
+  position:sticky;top:0;z-index:20;
+  background:linear-gradient(180deg,var(--ink) 72%,rgba(11,12,14,0));
+  padding:calc(14px + env(safe-area-inset-top)) 0 10px;
+}
+.brandline{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.brand{
+  font-family:var(--display);font-weight:700;font-size:23px;
+  letter-spacing:.14em;text-transform:uppercase;margin:0;
+}
+.brand span{color:var(--rope);}
+.cycle{
+  font-family:var(--display);font-size:12px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+}
+.cycle b{color:var(--text);font-weight:600;}
+
+/* ---------- Round rail (signature) ---------- */
+.rail{
+  display:flex;gap:7px;margin-top:12px;
+  overflow-x:auto;padding-bottom:2px;scrollbar-width:none;
+}
+.rail::-webkit-scrollbar{display:none;}
+.chip{
+  position:relative;flex:1 0 auto;min-width:60px;height:52px;
+  background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;overflow:hidden;transition:border-color .18s,transform .12s;
+}
+.chip:active{transform:scale(.96);}
+.chip .fill{
+  position:absolute;left:0;right:0;bottom:0;height:0%;
+  background:var(--rope-dim);transition:height .35s cubic-bezier(.4,0,.2,1);
+}
+.chip .num{position:relative;font-family:var(--display);font-size:19px;font-weight:600;line-height:1;}
+.chip .lbl{position:relative;font-family:var(--display);font-size:9px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+.chip.active{border-color:var(--rope);}
+.chip.active .lbl{color:var(--rope);}
+.chip.done .fill{background:rgba(47,191,113,.18);}
+.chip.done .num::after{
+  content:'✓';position:absolute;top:-6px;right:-11px;
+  font-size:10px;color:var(--win);font-family:var(--body);
+}
+.chip:focus-visible{outline:2px solid var(--rope);outline-offset:2px;}
+
+/* ---------- Day card ---------- */
+.day{margin-top:16px;animation:rise .28s ease both;}
+@keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.day-head{
+  border:1px solid var(--line);border-bottom:none;border-radius:12px 12px 0 0;
+  background:var(--surface);padding:15px 16px 14px;
+}
+.day-head.is-done{border-color:rgba(47,191,113,.4);}
+.eyebrow{
+  font-family:var(--display);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--rope);margin:0 0 5px;
+}
+.day-title{
+  font-family:var(--display);font-weight:600;font-size:25px;line-height:1.08;
+  text-transform:uppercase;letter-spacing:.02em;margin:0;
+}
+.meter{margin-top:13px;}
+.meter-bar{height:3px;background:var(--surface-2);border-radius:2px;overflow:hidden;}
+.meter-bar i{display:block;height:100%;width:0;background:var(--rope);transition:width .3s ease,background .3s;}
+.meter.is-done .meter-bar i{background:var(--win);}
+.meter-txt{
+  display:flex;justify-content:space-between;margin-top:7px;
+  font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+.meter.is-done .meter-txt b{color:var(--win);}
+.meter-txt b{color:var(--text);font-weight:500;}
+
+.body-card{
+  border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;
+  background:var(--surface);overflow:hidden;
+}
+.body-card.is-done{border-color:rgba(47,191,113,.4);}
+
+.block{border-top:1px solid var(--line);padding:14px 16px 6px;}
+.block:first-child{border-top:none;}
+.block-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:9px;}
+.block-name{
+  font-family:var(--display);font-size:15px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.tag{
+  font-family:var(--display);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;border:1px solid currentColor;opacity:.9;
+}
+.t-potencia{color:#E23A2E;}
+.t-forca{color:#F2A63B;}
+.t-acessorio{color:#5FA8F5;}
+.t-core{color:#B47CF0;}
+.t-cond{color:#2FBF71;}
+.t-iso{color:#8FA0B0;}
+
+/* ---------- Exercise rows ---------- */
+.ex{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 2px;border-bottom:1px solid rgba(38,41,47,.55);
+  cursor:pointer;user-select:none;
+}
+.block .ex:last-child{border-bottom:none;}
+.box{
+  flex:0 0 22px;height:22px;border:1.5px solid #3A3F47;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .16s,border-color .16s,transform .12s;
+}
+.box svg{width:12px;height:12px;stroke:var(--ink);stroke-width:3.2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .2s ease .04s;}
+.ex.on .box{background:var(--rope);border-color:var(--rope);}
+.ex.on .box svg{stroke-dashoffset:0;}
+.ex:active .box{transform:scale(.88);}
+.ex-name{flex:1;font-size:14.5px;transition:color .2s,opacity .2s;}
+.ex.on .ex-name{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rope-dim);}
+.ex:focus-visible{outline:2px solid var(--rope);outline-offset:3px;border-radius:6px;}
+
+.chain{
+  font-family:var(--display);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);padding:0 2px 8px;
+}
+
+/* ---------- Note ---------- */
+.note{
+  border-top:1px solid var(--line);padding:13px 16px;
+  font-size:13px;color:var(--muted);line-height:1.5;
+}
+.note b{color:var(--text);font-weight:600;}
+
+/* ---------- Actions ---------- */
+.actions{display:flex;gap:9px;margin-top:12px;}
+button{
+  font-family:var(--display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  border-radius:10px;border:1px solid var(--line);background:var(--surface);
+  color:var(--text);padding:14px 12px;cursor:pointer;transition:background .16s,border-color .16s,transform .1s;
+}
+button:active{transform:scale(.985);}
+button:focus-visible{outline:2px solid var(--rope);outline-offset:2px;}
+.btn-main{flex:1;background:var(--rope);border-color:var(--rope);font-weight:600;}
+.btn-main.undo{background:transparent;border-color:rgba(47,191,113,.45);color:var(--win);}
+.btn-ghost{flex:0 0 auto;color:var(--muted);padding-left:16px;padding-right:16px;}
+
+/* ---------- Bottom nav ---------- */
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  background:rgba(21,23,26,.94);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+}
+.nav-in{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:9px;}
+.nav-btn{
+  flex:0 0 52px;padding:13px 0;font-size:16px;letter-spacing:0;color:var(--muted);
+}
+.nav-btn[disabled]{opacity:.3;}
+.nav-mid{
+  flex:1;text-align:center;font-family:var(--display);
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+}
+.nav-mid b{display:block;color:var(--text);font-size:14px;font-weight:600;letter-spacing:.1em;}
+
+/* ---------- Sheet ---------- */
+.sheet-open{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;}
+.sheet-open.show{display:block;}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;background:var(--surface);
+  border-top:1px solid var(--line);border-radius:16px 16px 0 0;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom));
+  max-width:620px;margin:0 auto;
+}
+.sheet h3{font-family:var(--display);font-size:15px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 12px;}
+.sheet p{font-size:13px;color:var(--muted);margin:0 0 14px;}
+.sheet textarea{
+  width:100%;height:88px;background:var(--ink);color:var(--text);
+  border:1px solid var(--line);border-radius:9px;padding:10px;
+  font-family:monospace;font-size:11px;resize:none;
+}
+.sheet .actions{margin-top:12px;}
+.danger{color:var(--rope);border-color:var(--rope-dim);}
+.warn{
+  background:rgba(226,58,46,.1);border:1px solid var(--rope-dim);color:#F5B3AE;
+  border-radius:9px;padding:10px 12px;font-size:12.5px;margin-top:12px;display:none;
+}
+.warn.show{display:block;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brandline">
+      <h1 class="brand">Camp<span>.</span></h1>
+      <div class="cycle">Ciclo <b id="cycleNum">1</b></div>
+    </div>
+    <div class="rail" id="rail"></div>
+  </header>
+
+  <main id="app"></main>
+
+  <div class="actions">
+    <button class="btn-main" id="btnDone"></button>
+    <button class="btn-ghost" id="btnClear">Limpar</button>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-in">
+    <button class="nav-btn" id="prev" aria-label="Dia anterior">‹</button>
+    <div class="nav-mid">
+      <b id="navTitle">Dia 1</b>
+      <span id="navSub">de 8</span>
+    </div>
+    <button class="nav-btn" id="next" aria-label="Próximo dia">›</button>
+    <button class="nav-btn" id="cfg" aria-label="Ajustes">⋯</button>
+  </div>
+</nav>
+
+<div class="sheet-open" id="sheetBg">
+  <div class="sheet">
+    <h3>Ajustes</h3>
+    <p>Seu progresso fica salvo neste aparelho. Use o backup se for trocar de celular ou limpar os dados do navegador.</p>
+    <textarea id="backup" spellcheck="false" placeholder="Cole aqui um backup para restaurar"></textarea>
+    <div class="actions">
+      <button class="btn-main" id="btnExport" style="background:var(--surface-2);border-color:var(--line);color:var(--text)">Gerar backup</button>
+      <button class="btn-ghost" id="btnImport">Restaurar</button>
+    </div>
+    <div class="actions">
+      <button class="btn-ghost danger" id="btnNewCycle" style="flex:1">Iniciar novo ciclo</button>
+      <button class="btn-ghost" id="btnCloseSheet">Fechar</button>
+    </div>
+    <div class="warn" id="warn">Este navegador não está guardando o progresso. Abra o arquivo pelo Chrome ou instale na tela inicial.</div>
+  </div>
+</div>
+
+<script>
+/* ============ PROGRAMA ============ */
+const T = {p:['Potência','t-potencia'], f:['Força','t-forca'], a:['Acessório','t-acessorio'],
+           c:['Core','t-core'], m:['Condicionamento','t-cond'], i:['Isometria','t-iso']};
+
+const PROGRAM = [
+{n:1,focus:'Empurrar',title:'Empurrar + Potência Superior',
+ note:'<b>Encaixe:</b> dia leve para as pernas — bom para combinar com sparring ou saco pesado.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Flexão Pliométrica','Batida de Medicine Ball no Chão']},
+  {name:'Força principal',tag:'f',ex:['Supino Reto']},
+  {name:'Complementares',tag:'a',ex:['Desenvolvimento Militar Sentado','Paralelas (Tríceps)','Single-Arm Push-up']},
+  {name:'Ombro e punho',tag:'a',ex:['Rotação Externa do Ombro','Rotação Interna de Ombros','Flexão com Dedos']},
+  {name:'Core',tag:'c',ex:['Hollow Hold','Prancha Frontal']},
+  {name:'Finalização',tag:'m',ex:['Battling Ropes']}
+]},
+{n:2,focus:'Pernas',title:'Pernas: Força + Saltos',
+ note:'<b>Atenção:</b> não coloque este dia na véspera de sparring intenso.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Salto na Caixa (Box Jump)','Salto Encolhido (Tuck Jump)']},
+  {name:'Força principal',tag:'f',ex:['Agachamento Livre','Stiff']},
+  {name:'Unilateral',tag:'f',ex:['Agachamento Búlgaro']},
+  {name:'Complementares',tag:'a',ex:['Elevação Pélvica','Mesa Flexora','Elevação de Panturrilhas Livre']},
+  {name:'Core',tag:'c',ex:['Elevação de Pernas','Superman Hold']},
+  {name:'Finalização',tag:'m',ex:['Kettlebell Swing']}
+]},
+{n:3,focus:'Puxar',title:'Puxar + Rotação + Pegada',
+ note:'<b>Transferência:</b> pegada e rotação são o dia mais direto para o clinch.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Hang Clean com Barra','Arremesso Rotacional com Medicine Ball']},
+  {name:'Força principal',tag:'f',ex:['Barra Fixa Pegada Pronada','Remada Curvada']},
+  {name:'Complementares',tag:'a',ex:['Face Pull','Encolhimento (Trapézio)','Extensão de Punho com Halter','Flexão de Punho com Halter']},
+  {name:'Pegada',tag:'i',ex:['Pendurada Passiva (Dead Hang)']},
+  {name:'Core rotacional',tag:'c',ex:['Giro Russo','Prancha Lateral']},
+  {name:'Finalização',tag:'m',ex:['Corrida com Joelhos Altos']}
+]},
+{n:4,focus:'Corpo inteiro',title:'Unilateral + HIIT',
+ note:'<b>Encaixe:</b> exige pernas descansadas. Evite emendar com o Dia 2.',
+ blocks:[
+  {name:'Potência unilateral',tag:'p',ex:['Avanço com Salto']},
+  {name:'Força unilateral',tag:'f',ex:['Pistol Squat com Box','Afundo Lateral']},
+  {name:'Máquinas',tag:'a',ex:['Leg Press 45°','Cadeira Extensora','Cadeira Adutora','Cadeira Abdutora','Panturrilha Unilateral']},
+  {name:'Core',tag:'c',ex:['Abdominal na Rodinha','Elevação de Pernas Deitado com Sustentação']},
+  {name:'Circuito final',tag:'m',chain:true,ex:['Burpees','Salto com Torção de Tronco','Battling Ropes','Abdominal Cruzado em Pé','Polichinelo']}
+]},
+{n:5,focus:'Empurrar',title:'Empurrar + Potência Superior',
+ note:'<b>Variação:</b> o empurrar vertical assume o papel de potência aqui.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Push Press','Batida de Medicine Ball no Chão']},
+  {name:'Força principal',tag:'f',ex:['Supino Inclinado']},
+  {name:'Complementares',tag:'a',ex:['Desenvolvimento Militar Sentado','Paralelas (Tríceps)','Flexão com Toque no Ombro']},
+  {name:'Ombro e punho',tag:'a',ex:['Rotação Externa do Ombro','Rotação Interna de Ombros','Flexão com Dedos']},
+  {name:'Core',tag:'c',ex:['Hollow Hold','Prancha Frontal']},
+  {name:'Finalização',tag:'m',ex:['Burpees']}
+]},
+{n:6,focus:'Pernas',title:'Pernas: Força + Saltos',
+ note:'<b>Atenção:</b> dia mais pesado do ciclo. Priorize sono e comida em volta dele.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Agachamento com Salto com Halteres','Salto com Afundo (Split Jump)']},
+  {name:'Força principal',tag:'f',ex:['Agachamento Frontal','Levantamento Terra']},
+  {name:'Unilateral',tag:'f',ex:['Avanço Caminhante com Halteres']},
+  {name:'Complementares',tag:'a',ex:['Elevação Pélvica','Cadeira Flexora','Elevação de Panturrilhas Livre']},
+  {name:'Core',tag:'c',ex:['Elevação de Pernas','Superman Hold']},
+  {name:'Finalização',tag:'m',ex:['Kettlebell Swing']}
+]},
+{n:7,focus:'Puxar',title:'Puxar + Rotação + Pegada',
+ note:'<b>Transferência:</b> a caminhada do fazendeiro sustenta o agarre no clinch longo.',
+ blocks:[
+  {name:'Potência',tag:'p',ex:['Power Clean','Arremesso Rotacional com Medicine Ball']},
+  {name:'Força principal',tag:'f',ex:['Barra Fixa Pegada Pronada','Remada Serrote']},
+  {name:'Complementares',tag:'a',ex:['Face Pull','Encolhimento (Trapézio)','Extensão de Punho com Halter','Flexão de Punho com Halter']},
+  {name:'Pegada',tag:'i',ex:['Caminhada do Fazendeiro']},
+  {name:'Core rotacional',tag:'c',ex:['Giro Russo','Prancha Lateral']},
+  {name:'Finalização',tag:'m',ex:['Polichinelo','Abdominal Cruzado em Pé']}
+]},
+{n:8,focus:'Corpo inteiro',title:'Unilateral + HIIT',
+ note:'<b>Fecha o ciclo.</b> Ao concluir, reinicie no Dia 1 com carga um pouco maior.',
+ blocks:[
+  {name:'Potência unilateral',tag:'p',ex:['Agachamento com Salto']},
+  {name:'Força unilateral',tag:'f',ex:['Step-up','Afundo Lateral']},
+  {name:'Máquinas',tag:'a',ex:['Leg Press 45°','Cadeira Extensora','Cadeira Adutora','Cadeira Abdutora','Panturrilha Unilateral']},
+  {name:'Core',tag:'c',ex:['Abdominal na Rodinha','Elevação de Pernas Deitado com Sustentação']},
+  {name:'Circuito final',tag:'m',chain:true,ex:['Burpees','Salto com Torção de Tronco','Battling Ropes','Abdominal Cruzado em Pé','Polichinelo']}
+]}
+];
+
+/* ============ ARMAZENAMENTO ============ */
+const KEY='camp.muaythai.v1';
+let storageOK=true;
+const mem={};
+const store={
+  read(){
+    try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}
+    catch(e){storageOK=false;return mem[KEY]||null;}
+  },
+  write(v){
+    mem[KEY]=v;
+    try{localStorage.setItem(KEY,JSON.stringify(v));}
+    catch(e){storageOK=false;document.getElementById('warn').classList.add('show');}
+  }
+};
+
+let S = store.read() || {cycle:1,day:1,checked:{},done:{}};
+if(!S.checked)S.checked={};
+if(!S.done)S.done={};
+const save=()=>store.write(S);
+
+/* ============ HELPERS ============ */
+const total = d => PROGRAM[d-1].blocks.reduce((s,b)=>s+b.ex.length,0);
+const count = d => (S.checked[d]||[]).length;
+const id = (d,b,i) => d+'.'+b+'.'+i;
+const isOn = (d,b,i) => (S.checked[d]||[]).includes(id(d,b,i));
+
+/* ============ RENDER ============ */
+function rail(){
+  const el=document.getElementById('rail');
+  el.innerHTML='';
+  PROGRAM.forEach(d=>{
+    const pct = Math.round(count(d.n)/total(d.n)*100);
+    const b=document.createElement('button');
+    b.className='chip'+(d.n===S.day?' active':'')+(S.done[d.n]?' done':'');
+    b.innerHTML=`<span class="fill" style="height:${pct}%"></span>
+      <span class="num">${d.n}</span><span class="lbl">${d.focus.split(' ')[0]}</span>`;
+    b.onclick=()=>{S.day=d.n;save();render();};
+    el.appendChild(b);
+  });
+}
+
+function render(){
+  const d=PROGRAM[S.day-1], done=!!S.done[S.day];
+  const c=count(S.day), t=total(S.day), pct=Math.round(c/t*100);
+
+  document.getElementById('cycleNum').textContent=S.cycle;
+  document.getElementById('navTitle').textContent='Dia '+S.day;
+  document.getElementById('navSub').textContent=d.focus;
+  document.getElementById('prev').disabled=S.day===1;
+  document.getElementById('next').disabled=S.day===8;
+
+  let html=`<div class="day">
+    <div class="day-head${done?' is-done':''}">
+      <p class="eyebrow">Dia ${d.n} · ${d.focus}</p>
+      <h2 class="day-title">${d.title}</h2>
+      <div class="meter${done?' is-done':''}">
+        <div class="meter-bar"><i style="width:${pct}%"></i></div>
+        <div class="meter-txt"><span><b>${c}</b> de ${t} feitos</span><span>${done?'Concluído':pct+'%'}</span></div>
+      </div>
+    </div>
+    <div class="body-card${done?' is-done':''}">`;
+
+  d.blocks.forEach((bl,bi)=>{
+    html+=`<div class="block"><div class="block-head">
+      <span class="block-name">${bl.name}</span>
+      <span class="tag ${T[bl.tag][1]}">${T[bl.tag][0]}</span></div>`;
+    if(bl.chain) html+=`<div class="chain">Encadeado, sem trocar de estação</div>`;
+    bl.ex.forEach((name,ei)=>{
+      const on=isOn(S.day,bi,ei);
+      html+=`<div class="ex${on?' on':''}" tabindex="0" role="checkbox" aria-checked="${on}" data-b="${bi}" data-i="${ei}">
+        <span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"/></svg></span>
+        <span class="ex-name">${name}</span></div>`;
+    });
+    html+=`</div>`;
+  });
+
+  html+=`<div class="note">${d.note}</div></div></div>`;
+  document.getElementById('app').innerHTML=html;
+
+  document.querySelectorAll('.ex').forEach(el=>{
+    const go=()=>toggle(+el.dataset.b,+el.dataset.i);
+    el.onclick=go;
+    el.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();go();}};
+  });
+
+  const btn=document.getElementById('btnDone');
+  btn.textContent = done ? 'Desfazer conclusão' : 'Concluir dia';
+  btn.className = 'btn-main'+(done?' undo':'');
+  rail();
+}
+
+function toggle(b,i){
+  const k=id(S.day,b,i);
+  const arr=S.checked[S.day]||[];
+  const ix=arr.indexOf(k);
+  ix>-1 ? arr.splice(ix,1) : arr.push(k);
+  S.checked[S.day]=arr;
+  if(ix>-1 && S.done[S.day]) delete S.done[S.day];
+  save();render();
+}
+
+/* ============ AÇÕES ============ */
+document.getElementById('btnDone').onclick=()=>{
+  if(S.done[S.day]){ delete S.done[S.day]; save(); render(); return; }
+  const d=PROGRAM[S.day-1], arr=[];
+  d.blocks.forEach((bl,bi)=>bl.ex.forEach((_,ei)=>arr.push(id(S.day,bi,ei))));
+  S.checked[S.day]=arr; S.done[S.day]=true;
+  if(S.day<8) S.day++;
+  save(); render();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+document.getElementById('btnClear').onclick=()=>{
+  S.checked[S.day]=[]; delete S.done[S.day]; save(); render();
+};
+document.getElementById('prev').onclick=()=>{if(S.day>1){S.day--;save();render();}};
+document.getElementById('next').onclick=()=>{if(S.day<8){S.day++;save();render();}};
+
+const bg=document.getElementById('sheetBg');
+document.getElementById('cfg').onclick=()=>{bg.classList.add('show'); if(!storageOK)document.getElementById('warn').classList.add('show');};
+document.getElementById('btnCloseSheet').onclick=()=>bg.classList.remove('show');
+bg.onclick=e=>{if(e.target===bg)bg.classList.remove('show');};
+
+document.getElementById('btnExport').onclick=()=>{
+  document.getElementById('backup').value=JSON.stringify(S);
+  document.getElementById('backup').select();
+};
+document.getElementById('btnImport').onclick=()=>{
+  try{
+    const v=JSON.parse(document.getElementById('backup').value);
+    if(!v.checked) throw 0;
+    S=v; S.checked=S.checked||{}; S.done=S.done||{};
+    save(); render(); bg.classList.remove('show');
+  }catch(e){ alert('Backup inválido. Cole o texto completo gerado pelo app.'); }
+};
+document.getElementById('btnNewCycle').onclick=()=>{
+  if(!confirm('Zerar todos os checks e começar o Ciclo '+(S.cycle+1)+'?')) return;
+  S={cycle:S.cycle+1,day:1,checked:{},done:{}};
+  save(); render(); bg.classList.remove('show');
+};
+
+/* swipe entre dias */
+let x0=null;
+document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(x0===null)return;
+  const dx=e.changedTouches[0].clientX-x0; x0=null;
+  if(Math.abs(dx)<70)return;
+  if(dx<0&&S.day<8)S.day++; else if(dx>0&&S.day>1)S.day--; else return;
+  save();render();
+},{passive:true});
+
+render();
+
+/* funciona sem internet depois da primeira abertura */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
