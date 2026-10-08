@@ -1,0 +1,152 @@
+# aws cloudformation deploy --stack-name simple-vpc --template-file cloudformation/vpc-simple/vpc.cform.yaml
+# aws cloudformation delete-stack --stack-name simple-vpc
+Description: VPC with single public subnet.
+
+Parameters:
+  EnvId:
+    Type: String
+    Default: project
+
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnet0Cidr:
+    Type: String
+    Default: 10.0.0.0/24
+
+  PublicSubnet1Cidr:
+    Type: String
+    Default: 10.0.1.0/24
+
+  PublicSubnet2Cidr:
+    Type: String
+    Default: 10.0.2.0/24
+
+Resources:
+  SimpleVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-simple-vpc
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-simple-igw
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref SimpleVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref SimpleVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-public-rt
+
+  PublicDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref SimpleVPC
+      CidrBlock: !Ref PublicSubnet0Cidr
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-public-0
+        - Key: Tier
+          Value: public
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref SimpleVPC
+      CidrBlock: !Ref PublicSubnet1Cidr
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-public-1
+        - Key: Tier
+          Value: public
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref SimpleVPC
+      CidrBlock: !Ref PublicSubnet2Cidr
+      AvailabilityZone: !Select [2, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvId}-public-2
+        - Key: Tier
+          Value: public
+
+  AssocPublicSubnet0:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet0
+      RouteTableId: !Ref PublicRouteTable
+
+  AssocPublicSubnet1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  AssocPublicSubnet2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+Outputs:
+  VpcId:
+    Value: !Ref SimpleVPC
+    Export:
+      Name: !Sub ${EnvId}-VpcId
+
+  InternetGatewayId:
+    Value: !Ref InternetGateway
+    Export:
+      Name: !Sub ${EnvId}-InternetGatewayId
+
+  PublicRouteTableId:
+    Value: !Ref PublicRouteTable
+    Export:
+      Name: !Sub ${EnvId}-PublicRouteTableId
+
+  PublicSubnet1Id:
+    Value: !Ref PublicSubnet0
+    Export:
+      Name: !Sub ${EnvId}-PublicSubnet1Id
+
+  PublicSubnet2Id:
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub ${EnvId}-PublicSubnet2Id
+
+  PublicSubnet3Id:
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub ${EnvId}-PublicSubnet3Id

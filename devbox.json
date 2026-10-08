@@ -1,6 +1,9 @@
 {
-  "$schema":  "https://raw.githubusercontent.com/jetify-com/devbox/0.18.3/.schema/devbox.schema.json",
-  "packages": ["awscli2@latest"],
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.18.3/.schema/devbox.schema.json",
+  "packages": [
+    "awscli2@latest",
+    "aws-sam-cli@latest"
+  ],
   "shell": {
     "init_hook": [
       "echo 'Welcome to devbox!' > /dev/null"

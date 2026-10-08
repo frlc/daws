@@ -1,6 +1,56 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "aws-sam-cli@latest": {
+      "last_modified": "2026-10-04T16:11:07Z",
+      "resolved": "github:NixOS/nixpkgs/9013764fcc0ea99fa16cf7aa7decf8a5c3889dd2#aws-sam-cli",
+      "source": "devbox-search",
+      "version": "1.165.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sxif0bjj4kzcq45wmlnkppk8316h0558-aws-sam-cli-1.165.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/2ykda9kr7hbwgsicpnvggnj060ipw0d1-aws-sam-cli-1.165.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/sxif0bjj4kzcq45wmlnkppk8316h0558-aws-sam-cli-1.165.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/m8hk918nhzlx5w47912hdmzylskgxn45-aws-sam-cli-1.165.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/1i0kladp1wm437cmzip74fc6nf8vzf3r-aws-sam-cli-1.165.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/m8hk918nhzlx5w47912hdmzylskgxn45-aws-sam-cli-1.165.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sgrffqliy1qsjljmpmqln5r0jwfhlyw9-aws-sam-cli-1.165.0",
+              "default": true
+            },
+            {
+              "name": "dist",
+              "path": "/nix/store/gr7y8hx9xfq62z8qr4877xb7j271pvpw-aws-sam-cli-1.165.0-dist"
+            }
+          ],
+          "store_path": "/nix/store/sgrffqliy1qsjljmpmqln5r0jwfhlyw9-aws-sam-cli-1.165.0"
+        }
+      }
+    },
     "awscli2@latest": {
       "last_modified": "2026-08-27T07:16:00Z",
       "resolved": "github:NixOS/nixpkgs/c27cdad491a991b11ed731760aa2ef8db0cb0410#awscli2",
